@@ -8,7 +8,7 @@ use Dwij\Laraadmin\Models\ModuleFieldTypes;
 
 class LAFormMaker
 {
-	
+	protected $test = "Test";
 	/**
 	* Print input field enclosed within form-group
 	**/
