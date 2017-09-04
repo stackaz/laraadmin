@@ -45,7 +45,8 @@ class __controller_class_name__ extends Controller
 	public function index()
 	{
 		$module = Module::get('__module_name__');
-		
+		$module = translate_module($module);
+
 		if(Module::hasAccess($module->id)) {
 			return View('la.__view_folder__.index', [
 				'show_actions' => $this->show_action,
@@ -107,6 +108,8 @@ class __controller_class_name__ extends Controller
 			$__singular_var__ = __model_name__::find($id);
 			if(isset($__singular_var__->id)) {
 				$module = Module::get('__module_name__');
+				$module = translate_module($module);
+
 				$module->row = $__singular_var__;
 				
 				return view('la.__view_folder__.show', [
@@ -138,6 +141,7 @@ class __controller_class_name__ extends Controller
 			$__singular_var__ = __model_name__::find($id);
 			if(isset($__singular_var__->id)) {	
 				$module = Module::get('__module_name__');
+				$module = translate_module($module);
 				
 				$module->row = $__singular_var__;
 				

@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "__module_name_2__")
-@section("contentheader_description", "__module_name_2__ listing")
-@section("section", "__module_name_2__")
-@section("sub_section", "Listing")
-@section("htmlheader_title", "__module_name_2__ Listing")
+@section("contentheader_title", trans('/modules/__module_name_2__.view.module_name'))
+@section("contentheader_description", trans('view.listing'))
+@section("section", trans('/modules/__module_name_2__.view.module_name'))
+@section("sub_section", trans('view.listing'))
+@section("htmlheader_title", trans('/modules/__module_name_2__.view.module_name'))
 
 @section("headerElems")
-@la_access("__module_name__", "create")
-	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add __singular_cap_var__</button>
+@la_access("__module_name_2__", "create")
+	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">{{trans('/modules/__module_name_2__.view.add_new')}}</button>
 @endla_access
 @endsection
 
@@ -45,7 +45,7 @@
 	</div>
 </div>
 
-@la_access("__module_name__", "create")
+@la_access("__module_name_2__", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -64,8 +64,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				{!! Form::submit( 'Submit', ['class'=>'btn btn-success']) !!}
+				<button type="button" class="btn btn-default" data-dismiss="modal">{{trans('view.close')}}</button>
+				{!! Form::submit( trans('view.submit'), ['class'=>'btn btn-success']) !!}
 			</div>
 			{!! Form::close() !!}
 		</div>
@@ -90,7 +90,7 @@ $(function () {
 		language: {
 			lengthMenu: "_MENU_",
 			search: "_INPUT_",
-			searchPlaceholder: "Search"
+			searchPlaceholder: "{{trans('view.search')}}"
 		},
 		@if($show_actions)
 		columnDefs: [ { orderable: false, targets: [-1] }],

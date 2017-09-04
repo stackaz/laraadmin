@@ -42,6 +42,16 @@ class CodeGenerator
         $md = str_replace("__singular_var__", $config->singularVar, $md);
 
         file_put_contents(base_path('app/Http/Controllers/LA/'.$config->controllerName.".php"), $md);
+
+        // Create language
+        $langEn = file_get_contents($templateDirectory.'/lang/en.stub');
+        $langEn = str_replace('__module_name__', $config->moduleName, $langEn);
+        file_put_contents(base_path('resources/lang/en/modules/'.$config->moduleName.".php"), $langEn);
+
+        $langVi = file_get_contents($templateDirectory.'/lang/vi.stub');
+        $langVi = str_replace('__module_name__', $config->moduleName, $langVi);
+        file_put_contents(base_path('resources/lang/vi/modules/'.$config->moduleName.".php"), $langVi);
+
     }
 
     public static function createModel($config, $comm = null) {
