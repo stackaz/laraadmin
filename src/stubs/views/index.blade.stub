@@ -34,7 +34,7 @@
 			<th>{{ $module->fields[$col]['label'] or ucfirst($col) }}</th>
 			@endforeach
 			@if($show_actions)
-			<th>trans('view.actions')</th>
+			<th>{{trans('view.actions')}}</th>
 			@endif
 		</tr>
 		</thead>
@@ -44,34 +44,6 @@
 		</table>
 	</div>
 </div>
-
-@la_access("__module_name_2__", "create")
-<div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Add __singular_cap_var__</h4>
-			</div>
-			{!! Form::open(['action' => 'LA\__controller_class_name__@store', 'id' => '__singular_var__-add-form']) !!}
-			<div class="modal-body">
-				<div class="box-body">
-                    @la_form($module)
-					
-					{{--
-					__input_fields__
-					--}}
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">{{trans('view.close')}}</button>
-				{!! Form::submit( trans('view.submit'), ['class'=>'btn btn-success']) !!}
-			</div>
-			{!! Form::close() !!}
-		</div>
-	</div>
-</div>
-@endla_access
 
 @endsection
 

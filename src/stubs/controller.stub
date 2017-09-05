@@ -72,7 +72,7 @@ class __controller_class_name__ extends Controller
 			
 			$module->row = $__singular_var__;
 			
-			return view('la.__view_folder__.edit', [
+			return view('la.__view_folder__.create', [
 				'module' => $module,
 				'view_col' => $this->view_col,
 			])->with('__singular_var__', $__singular_var__);
