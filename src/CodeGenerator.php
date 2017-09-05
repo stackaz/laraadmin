@@ -95,6 +95,26 @@ class CodeGenerator
 
         file_put_contents(base_path('resources/views/la/'.$config->dbTableName.'/index.blade.php'), $md);
 
+        // ============================ Create ============================
+        $md = file_get_contents($templateDirectory."/views/create.blade.stub");
+        
+        $md = str_replace("__module_name__", $config->moduleName, $md);
+        $md = str_replace("__db_table_name__", $config->dbTableName, $md);
+        $md = str_replace("__controller_class_name__", $config->controllerName, $md);
+        $md = str_replace("__singular_var__", $config->singularVar, $md);
+        $md = str_replace("__singular_cap_var__", $config->singularCapitalVar, $md);
+        $md = str_replace("__module_name_2__", $config->moduleName2, $md);
+
+        // Listing columns
+        $inputFields = "";
+        foreach ($config->module->fields as $field) {
+            $inputFields .= "\t\t\t\t\t@la_input($"."module, '".$field['colname']."')\n";
+        }
+        $inputFields = trim($inputFields);
+        $md = str_replace("__input_fields__", $inputFields, $md);
+
+        file_put_contents(base_path('resources/views/la/'.$config->dbTableName.'/create.blade.php'), $md);
+
         // ============================ Edit ============================
         $md = file_get_contents($templateDirectory."/views/edit.blade.stub");
 

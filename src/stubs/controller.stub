@@ -65,7 +65,20 @@ class __controller_class_name__ extends Controller
 	 */
 	public function create()
 	{
-		//
+		if(Module::hasAccess("__module_name__", "create")) {			
+			$__singular_var__ = new __model_name__();
+			$module = Module::get('__module_name__');
+			$module = translate_module($module);
+			
+			$module->row = $__singular_var__;
+			
+			return view('la.__view_folder__.edit', [
+				'module' => $module,
+				'view_col' => $this->view_col,
+			])->with('__singular_var__', $__singular_var__);
+		} else {
+			return redirect(config('laraadmin.adminRoute')."/");
+		}
 	}
 
 	/**
