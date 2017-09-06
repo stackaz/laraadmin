@@ -781,7 +781,9 @@ class Module extends Model
 				$fields2[$field['colname']] = $field;
 			}
 			$module['fields'] = $fields2;
-			return (object)$module;
+			$module =  (object)$module;
+			$module = translate_module($module);
+			return $module;
 		} else {
 			return null;
 		}
