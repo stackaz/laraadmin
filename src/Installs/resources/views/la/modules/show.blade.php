@@ -96,6 +96,7 @@ use Dwij\Laraadmin\Models\Module;
 							<th>Type</th>
 							<th>Unique</th>
 							<th>Default</th>
+							<th>Is Copy</th>
 							<th>Min</th>
 							<th>Max</th>
 							<th>Required</th>
@@ -113,6 +114,7 @@ use Dwij\Laraadmin\Models\Module;
 									<td>{{ $ftypes[$field['field_type']] }}</td>
 									<td>@if($field['unique']) <span class="text-danger">True</span>@endif </td>
 									<td>{{ $field['defaultvalue'] }}</td>
+									<td>@if($field['is_copy']) <span class="text-danger">True</span>@endif</td>
 									<td>{{ $field['minlength'] }}</td>
 									<td>{{ $field['maxlength'] }}</td>
 									<td>@if($field['required']) <span class="text-danger">True</span>@endif </td>
@@ -280,6 +282,12 @@ use Dwij\Laraadmin\Models\Module;
 						</div>
 					</div>
 
+					<div class="form-group">
+						<label for="is_copy">Is Copy:</label>
+						{{ Form::checkbox("is_copy", "is_copy", false, []) }}
+						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
+					</div>
+
 					<div id="length_div">
 						<div class="form-group">
 							<label for="minlength">Minimum :</label>
@@ -427,6 +435,11 @@ $(function () {
 		if(ft_val == 1 || ft_val == 2 || ft_val == 3 || ft_val == 7 || ft_val == 9 || ft_val == 11 || ft_val == 12 || ft_val == 15 || ft_val == 18 || ft_val == 20 || ft_val == 21 || ft_val == 24 ) {
 			$('#unique_val').addClass("hide");
 		}
+
+		/*$('#is_copy_val').removeClass("hide");
+		if(ft_val == 1 || ft_val == 2 || ft_val == 3 || ft_val == 7 || ft_val == 9 || ft_val == 11 || ft_val == 12 || ft_val == 15 || ft_val == 18 || ft_val == 20 || ft_val == 21 || ft_val == 24 ) {
+			$('#is_copy_val').addClass("hide");
+		}*/
 
 		$('#default_val').removeClass("hide");
 		if(ft_val == 11) {

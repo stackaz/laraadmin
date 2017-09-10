@@ -14,7 +14,7 @@ class ModuleFields extends Model
     protected $table = 'module_fields';
     
     protected $fillable = [
-        "colname", "label", "module", "field_type", "unique", "defaultvalue", "minlength", "maxlength", "required", "popup_vals"
+        "colname", "label", "module", "field_type", "unique", "defaultvalue", "minlength", "maxlength", "required", "popup_vals","is_copy"
     ];
     
     protected $hidden = [
@@ -68,7 +68,15 @@ class ModuleFields extends Model
                 }
             } else {
 				$field->popup_vals = "";
-			}
+            }
+            
+            //LamLe: IsCopy fields
+            if($request->is_copy) {
+                $field->is_copy = true;
+            } else {
+                $field->is_copy = false;
+            }
+
             $field->save();
             
             // Create Schema for Module Field
@@ -149,7 +157,15 @@ class ModuleFields extends Model
             }
         } else {
 			$field->popup_vals = "";
-		}
+        }
+        
+        //LamLe: IsCopy fields
+        if($request->is_copy) {
+            $field->is_copy = true;
+        } else {
+            $field->is_copy = false;
+        }
+        
         $field->save();
 
 		$field->module_obj = $module;

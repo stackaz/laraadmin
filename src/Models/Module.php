@@ -711,6 +711,7 @@ class Module extends Model
 	
 	public static function format_fields($fields) {
 		$out = array();
+
 		foreach ($fields as $field) {
 			$obj = (Object)array();
 			$obj->colname = $field[0];
@@ -756,6 +757,12 @@ class Module extends Model
 					$obj->popup_vals = $field[8];
 				}
 			}
+			if(!isset($field[9])) {
+				$obj->is_copy = 0;
+			} else {
+				$obj->is_copy = $field[9];
+			}
+
 			$out[] = $obj;
 		}
 		return $out;
@@ -898,6 +905,9 @@ class Module extends Model
 				$row->id = $old_row->id;
 			}
 			$row = Module::processDBRow($module, $request, $row);
+
+			//
+
 			$row->save();
 			return $row->id;
 		} else {
@@ -1264,6 +1274,41 @@ class Module extends Model
 			DB::insert('insert into role_module_fields (role_id, field_id, access, created_at, updated_at) values (?, ?, ?, ?, ?)', [$role->id, $field->id, $access_fields, $now, $now]);
 		} else {
 			DB::table('role_module_fields')->where('role_id', $role->id)->where('field_id', $field->id)->update(['access' => $access_fields]);
+		}
+	}
+
+
+	/**
+	* Copy field when user create new record on other language
+	* Module::setDefaultRoleAccess($module_id, $role_id);
+	**/
+	public static function copyDBRow($module_name, $id) {
+
+		$module = Module::get($module_name);
+		if(isset($module)) {
+			$model_name = ucfirst(str_singular($module_name));
+			if($model_name == "User" || $model_name == "Role" || $model_name == "Permission") {
+				$model = "App\\".ucfirst(str_singular($module_name));
+			} else {
+				$model = "App\\Models\\".ucfirst(str_singular($module_name));
+			}
+
+			$row = $model::find($id);
+			if(isset($row)) {
+				$newRow = new $model();
+				$ftypes = ModuleFieldTypes::getFTypes2();
+				foreach ($module->fields as $field) {
+					$isCopy = $field['is_copy'];
+		
+					if ($isCopy) {
+						$newRow->{$field['colname']} = $row->{$field['colname']} ;
+					}
+				}
+				return $newRow;
+			}
+			return null;
+		} else {
+			return null;
 		}
 	}
 }

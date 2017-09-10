@@ -46,6 +46,11 @@
 						<label for="defaultvalue">Default Value :</label>
 						{{ Form::text("defaultvalue", null, ['class'=>'form-control', 'placeholder'=>'Default Value']) }}
 					</div>
+					<div class="form-group">
+						<label for="is_copy">Is Copy :</label>
+						{{ Form::checkbox("is_copy", "is_copy") }}
+							<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
+					</div>
 					
 					<div id="length_div">
 						<div class="form-group">
@@ -100,7 +105,7 @@
 					
                     <br>
 					<div class="form-group">
-						{!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/modules/'.$module->id) }}" class="btn btn-default pull-right">Cancel</a>
+						{!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <button class="btn btn-default pull-right"><a href="{{ url(config('laraadmin.adminRoute') . '/modules/'.$module->id) }}">Cancel</a></button>
 					</div>
 				{!! Form::close() !!}
 				
