@@ -47,17 +47,16 @@
 						{{ Form::text("defaultvalue", null, ['class'=>'form-control', 'placeholder'=>'Default Value']) }}
 					</div>
 					<div class="form-group">
-						<label for="is_copy">Is Copy :</label>
+						<label for="is_copy">Is Copy:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						{{ Form::checkbox("is_copy", "is_copy") }}
 							<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
-					
 					<div class="form-group">
-						<label for="is_copy">Is Translate :</label>
+						<label for="is_translate">Is Translate :</label>
 						{{ Form::checkbox("is_translate", "is_translate") }}
 							<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
-
+					
 					<div id="length_div">
 						<div class="form-group">
 							<label for="minlength">Minimum :</label>

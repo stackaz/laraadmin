@@ -820,7 +820,7 @@ class Module extends Model
 	* Get Array for Dropdown, Multiselect, Taginput, Radio from Module getByTable
 	* $array = Module::getDDArray($module_name);
 	**/
-	public static function getDDArray($module_name) {
+	public static function getDDArray($module_name, $lang_data= null) {
 		$module = Module::where('name', $module_name)->first();
 		if(isset($module)) {
 			$model_name = ucfirst(str_singular($module_name));
@@ -830,7 +830,15 @@ class Module extends Model
 				$model = "App\\Models\\".ucfirst(str_singular($module_name));
 			}
 
-			$result = $model::all();
+			$result = null;
+
+			if ($lang_data != null) {
+				$lang = $lang_data['lang'];
+				$result = $model::where('lang', $lang)->get();
+			} else {
+				$result = $model::all();
+			}
+
 			$out = array();
 			foreach ($result as $row) {
 				$view_col = $module->view_col;
@@ -1286,7 +1294,6 @@ class Module extends Model
 
 	/**
 	* Copy field when user create new record on other language
-	* Module::setDefaultRoleAccess($module_id, $role_id);
 	**/
 	public static function copyDBRow($module_name, $id) {
 

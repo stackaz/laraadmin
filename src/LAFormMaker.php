@@ -20,7 +20,10 @@ class LAFormMaker
 			if(isset($module->row)) {
 				$row = $module->row;
 			}
-			
+
+			//get lang
+			$lang_data = property_exists($module, "lang") ? $module->lang : "" ;
+
 			//print_r($module->fields);
 			$label = $module->fields[$field_name]['label'];
 			$field_type = $module->fields[$field_name]['field_type'];
@@ -197,7 +200,7 @@ class LAFormMaker
 					}
 					
 					if($popup_vals != "") {
-						$popup_vals = LAFormMaker::process_values($popup_vals);
+						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data);
 					} else {
 						$popup_vals = array();
 					}
@@ -392,7 +395,7 @@ class LAFormMaker
 					}
 					
 					if($popup_vals != "") {
-						$popup_vals = LAFormMaker::process_values($popup_vals);
+						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data);
 					} else {
 						$popup_vals = array();
 					}
@@ -432,7 +435,8 @@ class LAFormMaker
 					}
 					
 					if(starts_with($popup_vals, "@")) {
-						$popup_vals = LAFormMaker::process_values($popup_vals);
+						//LamLe -- add filter language_data
+						$popup_vals = LAFormMaker::process_values($popup_vals,$lang_data);
 						$out .= '<div class="radio">';
 						foreach ($popup_vals as $key => $value) {
 							$sel = false;
@@ -503,7 +507,7 @@ class LAFormMaker
 							$default_val = array();
 						}
 					}
-					$default_val = LAFormMaker::process_values($default_val);
+					$default_val = LAFormMaker::process_values($default_val, $lang_data);
 					$out .= Form::select($field_name."[]", $default_val, $default_val, $params);
 					break;
 				case 'Textarea':
@@ -562,7 +566,7 @@ class LAFormMaker
 	* get data from module / table whichever is found if starts with '@'
 	**/
 	// $values = LAFormMaker::process_values($data);
-	public static function process_values($json) {
+	public static function process_values($json, $lang_data=null) {
 		$out = array();
 		// Check if populated values are from Module or Database Table
 		if(is_string($json) && starts_with($json, "@")) {
@@ -574,12 +578,21 @@ class LAFormMaker
 			// Search Module
 			$module = Module::getByTable($table_name);
 			if(isset($module->id)) {
-				$out = Module::getDDArray($module->name);
+				$out = Module::getDDArray($module->name, $lang_data);
 			} else {
 				// Search Table if no module found
 				if (Schema::hasTable($table_name)) {
 					$model = "App\\".ucfirst(str_singular($table_name));
-					$result = $model::all();
+
+					//LamLe - Filter language
+					if ($lang_data != null) {
+						$lang = $lang_data['lang'];
+						$result = $model::where('lang', $lang)->get();
+					} else {
+						$result = $model::all();
+					}
+
+					//$result = $model::all();
 					// find view column name
 					$view_col = "";
 					// Check if atleast one record exists

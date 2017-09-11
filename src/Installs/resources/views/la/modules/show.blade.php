@@ -116,6 +116,7 @@ use Dwij\Laraadmin\Models\Module;
 									<td>@if($field['unique']) <span class="text-danger">True</span>@endif </td>
 									<td>{{ $field['defaultvalue'] }}</td>
 									<td>@if($field['is_copy']) <span class="text-danger">True</span>@endif</td>
+									<td>@if($field['is_translate']) <span class="text-danger">True</span>@endif</td>
 									<td>{{ $field['minlength'] }}</td>
 									<td>{{ $field['maxlength'] }}</td>
 									<td>@if($field['required']) <span class="text-danger">True</span>@endif </td>
@@ -284,8 +285,14 @@ use Dwij\Laraadmin\Models\Module;
 					</div>
 
 					<div class="form-group">
-						<label for="is_copy">Is Copy:</label>
+						<label for="is_copy">Is Copy:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						{{ Form::checkbox("is_copy", "is_copy", false, []) }}
+						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
+					</div>
+
+					<div class="form-group">
+						<label for="is_translate">Is Translate:</label>
+						{{ Form::checkbox("is_translate", "is_translate", false, []) }}
 						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
 
