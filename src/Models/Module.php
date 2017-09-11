@@ -763,6 +763,12 @@ class Module extends Model
 				$obj->is_copy = $field[9];
 			}
 
+			if(!isset($field[10])) {
+				$obj->is_translate = 0;
+			} else {
+				$obj->is_translate = $field[10];
+			}
+
 			$out[] = $obj;
 		}
 		return $out;

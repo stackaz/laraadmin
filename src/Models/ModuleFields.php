@@ -14,7 +14,8 @@ class ModuleFields extends Model
     protected $table = 'module_fields';
     
     protected $fillable = [
-        "colname", "label", "module", "field_type", "unique", "defaultvalue", "minlength", "maxlength", "required", "popup_vals","is_copy"
+        "colname", "label", "module", "field_type", "unique", "defaultvalue", "minlength", "maxlength", "required", "popup_vals",
+        "is_copy","is_translate"
     ];
     
     protected $hidden = [

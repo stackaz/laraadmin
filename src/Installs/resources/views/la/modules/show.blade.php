@@ -97,6 +97,7 @@ use Dwij\Laraadmin\Models\Module;
 							<th>Unique</th>
 							<th>Default</th>
 							<th>Is Copy</th>
+							<th>Is Translate</th>
 							<th>Min</th>
 							<th>Max</th>
 							<th>Required</th>
