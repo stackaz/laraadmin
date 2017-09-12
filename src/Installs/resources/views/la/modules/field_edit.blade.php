@@ -102,6 +102,10 @@
 								@endforeach
 							@endif
 						</select>
+						<div class="form-group" style="margin-top:20px;">
+							<label for="defaultvalue">Filter Expressions :</label>
+							{{ Form::text("filter_expressions", null, ['class'=>'form-control', 'placeholder'=>'Filter Expressions']) }}
+						</div>
 						
 						<?php
 						// print_r($tables);

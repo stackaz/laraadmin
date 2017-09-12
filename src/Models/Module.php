@@ -764,9 +764,9 @@ class Module extends Model
 			}
 
 			if(!isset($field[10])) {
-				$obj->is_translate = 0;
+				$obj->filter_expressions = "";
 			} else {
-				$obj->is_translate = $field[10];
+				$obj->filter_expressions = $field[10];
 			}
 
 			$out[] = $obj;

@@ -15,7 +15,7 @@ class ModuleFields extends Model
     
     protected $fillable = [
         "colname", "label", "module", "field_type", "unique", "defaultvalue", "minlength", "maxlength", "required", "popup_vals",
-        "is_copy","is_translate"
+        "is_copy","is_translate","filter_expressions"
     ];
     
     protected $hidden = [
@@ -67,8 +67,10 @@ class ModuleFields extends Model
                     $request->popup_vals_list = json_encode($request->popup_vals_list);
                     $field->popup_vals = $request->popup_vals_list;
                 }
+                $field->filter_expressions = $request->filter_expressions;
             } else {
-				$field->popup_vals = "";
+                $field->popup_vals = "";
+                $field->filter_expressions = "";
             }
             
             //LamLe: IsCopy fields
@@ -78,6 +80,13 @@ class ModuleFields extends Model
                 $field->is_copy = false;
             }
 
+            if($request->is_translate) {
+                $field->is_translate = true;
+            } else {
+                $field->is_translate = false;
+            }
+            $field->filter_expressions = $request->filter_expressions;
+            
             $field->save();
             
             // Create Schema for Module Field
@@ -156,8 +165,10 @@ class ModuleFields extends Model
                 $request->popup_vals_list = json_encode($request->popup_vals_list);
                 $field->popup_vals = $request->popup_vals_list;
             }
+            $field->filter_expressions = $request->filter_expressions;
         } else {
-			$field->popup_vals = "";
+            $field->popup_vals = "";
+            $field->filter_expressions = "";
         }
         
         //LamLe: IsCopy fields
@@ -166,6 +177,13 @@ class ModuleFields extends Model
         } else {
             $field->is_copy = false;
         }
+
+        if($request->is_translate) {
+            $field->is_translate = true;
+        } else {
+            $field->is_translate = false;
+        }
+        
         
         $field->save();
 

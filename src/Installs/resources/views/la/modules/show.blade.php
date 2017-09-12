@@ -336,6 +336,11 @@ use Dwij\Laraadmin\Models\Module;
 								<option>Universal</option>
 							@endif
 						</select>
+
+						<div class="form-group" style="margin-top:20px;">
+							<label for="defaultvalue">Filter Expressions :</label>
+							{{ Form::text("filter_expressions", null, ['class'=>'form-control', 'placeholder'=>'Filter Expressions']) }}
+						</div>
 					</div>
 					
 				</div>
