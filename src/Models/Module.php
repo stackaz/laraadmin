@@ -1319,7 +1319,7 @@ class Module extends Model
 				}
 				return $newRow;
 			}
-			return null;
+			return new $model();
 		} else {
 			return null;
 		}
