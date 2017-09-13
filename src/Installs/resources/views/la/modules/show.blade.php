@@ -296,6 +296,12 @@ use Dwij\Laraadmin\Models\Module;
 						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
 
+					<div class="form-group">
+						<label for="is_same">Is Same :</label>
+						{{ Form::checkbox("is_same", "is_same") }}
+							<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
+					</div>
+
 					<div id="length_div">
 						<div class="form-group">
 							<label for="minlength">Minimum :</label>

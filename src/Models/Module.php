@@ -772,6 +772,12 @@ class Module extends Model
 				$obj->filter_expressions = $field[10];
 			}
 
+			if(!isset($field[11])) {
+				$obj->is_same = 0;
+			} else {
+				$obj->is_same = $field[1];
+			}
+
 			$out[] = $obj;
 		}
 		return $out;

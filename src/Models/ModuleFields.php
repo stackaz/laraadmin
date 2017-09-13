@@ -85,6 +85,12 @@ class ModuleFields extends Model
             } else {
                 $field->is_translate = false;
             }
+            if($request->is_same) {
+                $field->is_same = true;
+            } else {
+                $field->is_same = false;
+            }
+
             $field->filter_expressions = $request->filter_expressions;
             
             $field->save();
@@ -182,6 +188,12 @@ class ModuleFields extends Model
             $field->is_translate = true;
         } else {
             $field->is_translate = false;
+        }
+
+        if($request->is_same) {
+            $field->is_same = true;
+        } else {
+            $field->is_same = false;
         }
         
         
