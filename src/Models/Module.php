@@ -834,14 +834,16 @@ class Module extends Model
 			}
 
 			$result = null;
-
-			if ($lang_data != null) {
-				$lang = $lang_data['lang'];
-				$result = $model::where('lang', $lang)->get();
-			} else {
+			if(in_array($module_name, ['Users', 'Departments', 'Employees', 'Roles', 'Permissions', 'Organizations'])) {
 				$result = $model::all();
+			} else {
+				if ($lang_data != null) {
+					$lang = $lang_data['lang'];
+					$result = $model::where('lang', $lang)->get();
+				} else {
+					$result = $model::all();
+				}
 			}
-
 			$out = array();
 			foreach ($result as $row) {
 				$view_col = $module->view_col;
