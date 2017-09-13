@@ -98,6 +98,7 @@ use Dwij\Laraadmin\Models\Module;
 							<th>Default</th>
 							<th>Is Copy</th>
 							<th>Is Translate</th>
+							<th>Is Same</th>
 							<th>Min</th>
 							<th>Max</th>
 							<th>Required</th>
@@ -117,6 +118,7 @@ use Dwij\Laraadmin\Models\Module;
 									<td>{{ $field['defaultvalue'] }}</td>
 									<td>@if($field['is_copy']) <span class="text-danger">True</span>@endif</td>
 									<td>@if($field['is_translate']) <span class="text-danger">True</span>@endif</td>
+									<td>@if($field['is_same']) <span class="text-danger">True</span>@endif</td>
 									<td>{{ $field['minlength'] }}</td>
 									<td>{{ $field['maxlength'] }}</td>
 									<td>@if($field['required']) <span class="text-danger">True</span>@endif </td>
