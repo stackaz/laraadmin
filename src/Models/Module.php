@@ -10,6 +10,9 @@ use Log;
 use DB;
 use Dwij\Laraadmin\Helpers\LAHelper;
 
+use App\Models\LanguageMeta;
+use Gma\Api\LanguageTransportor;
+
 class Module extends Model
 {
 	protected $table = 'modules';
@@ -892,6 +895,8 @@ class Module extends Model
 	}
 	
 	public static function insert($module_name, $request) {
+		//For reference in LanguageMeta.
+		$moduleController = $module_name;
 		$module = Module::get($module_name);
 		if(isset($module)) {
 			$model_name = ucfirst(str_singular($module_name));
@@ -923,7 +928,23 @@ class Module extends Model
 			//
 
 			$row->save();
-			return $row->id;
+
+			$id = $row->id;
+
+			//Create language_meta
+			$params = ['content_id' => $id,
+					   'lang' => $request->get('lang'),
+					   'reference' => $moduleController];
+			if(!empty($request->get('from'))){
+				$languageMeta = LanguageMeta::where(['content_id' => mongo_id($request->get('from')),
+													'reference' => $model_name])->first();
+				if(!empty($languageMeta)) {
+					$params['origin'] = $languageMeta->origin;
+				}
+			}
+			$languageMeta = LanguageMeta::createLanguageMeta($params);
+
+			return $id;
 		} else {
 			return null;
 		}

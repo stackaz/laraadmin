@@ -6,6 +6,9 @@ use Collective\Html\FormFacade as Form;
 use Dwij\Laraadmin\Models\Module;
 use Dwij\Laraadmin\Models\ModuleFieldTypes;
 
+use App\Models\LanguageMeta;
+use Gma\Api\LanguageTransportor;
+
 class LAFormMaker
 {
 	/**
@@ -21,8 +24,12 @@ class LAFormMaker
 				$row = $module->row;
 			}
 
+			$lang = LanguageTransportor::getFromAndLang();
+			if(!empty($lang)) {
+				$lang_data = $lang;
+			}
 			//get lang
-			$lang_data = property_exists($module, "lang") ? $module->lang : "" ;
+			//$lang_data = property_exists($module, "lang") ? $module->lang : "" ;
 
 			//print_r($module->fields);
 			$label = $module->fields[$field_name]['label'];
@@ -200,7 +207,17 @@ class LAFormMaker
 					}
 					
 					if($popup_vals != "") {
+						$tmp_popup_vals = $popup_vals;
 						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data);
+						// echo "<pre>";
+						// var_dump($module);
+						if(empty($default_val)){
+							if(!empty($lang['curr_from'])){
+								$currFrom = $lang['curr_from'];
+								$default_val = LAFormMaker::mapDataDropdown($tmp_popup_vals, $lang_data['lang'], 
+																			$module->model,$currFrom, $field_name);
+							}
+						}
 					} else {
 						$popup_vals = array();
 					}
@@ -884,5 +901,52 @@ class LAFormMaker
 	public static function la_field_access($module_id, $field_id, $access_type = "view", $user_id = 0)
 	{
 		return Module::hasFieldAccess($module_id, $field_id, $access_type, $user_id);
+	}
+
+	/**
+	* Map Data Lang to other data lang.
+	* get data from module / table whichever is found if starts with '@'
+	* @param $value of fromLang.
+	
+	**/
+	// $values = LAFormMaker::mapDataDropdown($data);
+	public static function mapDataDropdown($json, $toLang, $parentModel, $parentValue, $fieldName) {
+
+		$parentModel = "App\\Models\\".$parentModel;
+		$parentData = $parentModel::where("_id", mongo_id($parentValue))->first();
+		if(empty($parentData)) {
+			return false;
+		}
+		$fieldValue = $parentData->$fieldName;
+
+		// Check if populated values are from Module or Database Table
+		if(is_string($json) && starts_with($json, "@")) {
+			// Get Module / Table Name
+			$json = str_ireplace("@", "", $json);
+			$table_name = strtolower(str_plural($json));
+			
+			// Search Module
+			$module = Module::getByTable($table_name);
+			$model = "App\\Models\\".ucfirst(str_singular($table_name));
+
+			$dataMeta = LanguageTransportor::getInfoLanguageMeta(['content_id'=>$fieldValue,
+		                                           'reference' => $module->name]);
+			if(empty($dataMeta)){
+				return false;
+			}
+
+			$origin = $dataMeta->origin;
+			$dataMetaes = LanguageTransportor::getInfoLanguageMetaFromOrigin(['origin' => $origin,
+																			  'reference' => $module->name]);
+			if(empty($dataMetaes)) {
+				return false;
+			}
+			foreach($dataMetaes as $key => $value) {
+				if($value->lang == $toLang) {
+					return mongo_id_string($value->content_id);
+				}
+			}
+			return false;
+		}
 	}
 }
