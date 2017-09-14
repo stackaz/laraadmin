@@ -19,6 +19,9 @@ use Dwij\Laraadmin\Models\ModuleFields;
 
 use App\Models\__model_name__;
 
+use App\Models\LanguageMeta;
+use Gma\Api\LanguageTransportor;
+
 class __controller_class_name__ extends Controller
 {
 	public $show_action = true;
@@ -211,6 +214,9 @@ class __controller_class_name__ extends Controller
 	public function destroy($id)
 	{
 		if(Module::hasAccess("__module_name__", "delete")) {
+			LanguageMeta::where(['content_id' => mongo_id($id),
+			'reference' => '__module_name__'])->delete();
+
 			__model_name__::find($id)->delete();
 			
 			// Redirecting to index() method
@@ -225,7 +231,7 @@ class __controller_class_name__ extends Controller
 	 *
 	 * @return
 	 */
-	public function dtajax()
+	public function dtajax(Request $request)
 	{
 		$values = DB::table('__db_table_name__')->select($this->listing_cols)->whereNull('deleted_at');
 		$out = Datatables::of($values)->make();
