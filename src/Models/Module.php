@@ -933,25 +933,66 @@ class Module extends Model
 			}
 			$row = Module::processDBRow($module, $request, $row);
 
-			//
-
 			$row->save();
 
 			$id = $row->id;
+
 
 			//Create language_meta
 			$params = ['content_id' => $id,
 					   'lang' => $request->get('lang'),
 					   'reference' => $moduleController];
 			if(!empty($request->get('from'))){
-				$languageMeta = LanguageMeta::where(['content_id' => mongo_id($request->get('from')),
-													'reference' => $model_name])->first();
+				$languageMeta = LanguageTransportor::getInfoLanguageMeta(['content_id' => $request->get('from'),
+																			'reference' => $moduleController]);
 				if(!empty($languageMeta)) {
 					$params['origin'] = $languageMeta->origin;
 				}
 			}
 			$languageMeta = LanguageMeta::createLanguageMeta($params);
 
+			//Update những field giống nhau ở các ngôn ngữ khi edit.
+			$dataEdit = $model::find($row->id);
+
+			if(!empty($params['origin'])) {
+				$origin = $params['origin'];
+			} else {
+				$origin = $languageMeta->origin;
+			}
+			$dataMetaes = LanguageTransportor::getInfoLanguageMetaFromOrigin(['origin' => $origin,
+																			  'reference' => $module->name]);
+			// With 2 more record Language Meta.
+			if(count($dataMetaes)>1) {
+				foreach($dataMetaes as $key => $value) {
+					if($value->lang != $request->get('lang')) {
+						$content_id = mongo_id_string($value->content_id);
+						$reference = $value->reference;
+						//Create module.
+						$dataModel = "App\\Models\\".ucfirst(str_singular($reference));
+						//Get data from language meta.
+						$contentValue = $dataModel::find(mongo_id($content_id));
+						if(!empty($contentValue)){
+							$listField = $module->fields;
+							$isUpdate = false;
+							foreach($listField as $n => $m) {
+								if($m['is_same'] == 1) {
+
+									//Replace if data different
+									if($row->$n != $contentValue->$n) {
+
+										$isUpdate = true;
+										$contentValue->$n = $row->$n;
+									}
+								}
+							}
+							if($isUpdate) {
+								$contentValue->save();
+							}
+						}
+						
+					}
+				}
+			}
 			return $id;
 		} else {
 			return null;

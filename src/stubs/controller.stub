@@ -62,13 +62,17 @@ class __controller_class_name__ extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create()
+	public function create($id)
 	{
 		if(Module::hasAccess("__module_name__", "create")) {			
 			$__singular_var__ = new __model_name__();
 			$module = Module::get('__module_name__');
 			$module = translate_module($module);
 			
+			if ($id != 0 ) {
+				$__singular_var__  = Module::copyDBRow('__module_name__', $id);
+			}
+
 			$module->row = $__singular_var__;
 			
 			return view('la.__view_folder__.create', [
