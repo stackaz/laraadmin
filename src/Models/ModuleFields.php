@@ -244,6 +244,37 @@ class ModuleFields extends Model
 			return $value;
 		}
     }
+
+    public static function getFieldValueByPopupVals($popup_vals, $value, $value_field_name = "") {
+        $external_table_name = substr($popup_vals, 1);
+
+		if(Schema::hasTable($external_table_name)) {
+            
+            $dataModel = "App\\Models\\".ucfirst(str_singular($external_table_name));
+            $contentValue = $dataModel::find(mongo_id($value));
+
+            if(!empty($contentValue)){
+                $external_module = DB::table('modules')->where('name_db', $external_table_name)->first();
+
+                if ($value_field_name != "") {
+                    return $contentValue->$value_field_name;
+                } else if(isset($external_module->view_col)) {
+                    $external_value_viewcol_name = $external_module->view_col;
+				    return $contentValue->$external_value_viewcol_name;
+                } else {
+                    if(isset($external_value[0]->{"name"})) {
+                        return $contentValue->name;
+                    } else if(isset($external_value[0]->{"value"})) {
+                        return $contentValue->title;
+                    }
+                }
+			} else {
+				return $value;
+			}
+		} else {
+			return $value;
+		}
+    }
 	
 	public static function listingColumnAccessScan($module_name, $listing_cols) {
         $module = Module::get($module_name);

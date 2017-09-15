@@ -21,12 +21,12 @@
 					
 					<div class="form-group">
 						<label for="label">Field Label :</label>
-						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'required' => 'required']) }}
+						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>30, 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">
 						<label for="colname">Column Name :</label>
-						{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
+						{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>100, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">
@@ -56,6 +56,7 @@
 						{{ Form::checkbox("is_translate", "is_translate") }}
 							<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
+
 					<div class="form-group">
 						<label for="is_same">Is Same :</label>
 						{{ Form::checkbox("is_same", "is_same") }}
@@ -107,6 +108,7 @@
 								@endforeach
 							@endif
 						</select>
+
 						<div class="form-group" style="margin-top:20px;">
 							<label for="defaultvalue">Filter Expressions :</label>
 							{{ Form::text("filter_expressions", null, ['class'=>'form-control', 'placeholder'=>'Filter Expressions']) }}

@@ -258,12 +258,12 @@ use Dwij\Laraadmin\Models\Module;
 				<div class="box-body">
 					<div class="form-group">
 						<label for="label">Field Label :</label>
-						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'required' => 'required']) }}
+						{{ Form::text("label", null, ['class'=>'form-control', 'placeholder'=>'Field Label', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>30, 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">
 						<label for="colname">Column Name :</label>
-						{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
+						{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>100, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">
@@ -349,6 +349,7 @@ use Dwij\Laraadmin\Models\Module;
 							<label for="defaultvalue">Filter Expressions :</label>
 							{{ Form::text("filter_expressions", null, ['class'=>'form-control', 'placeholder'=>'Filter Expressions']) }}
 						</div>
+
 					</div>
 					
 				</div>

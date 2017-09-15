@@ -829,7 +829,7 @@ class Module extends Model
 	* Get Array for Dropdown, Multiselect, Taginput, Radio from Module getByTable
 	* $array = Module::getDDArray($module_name);
 	**/
-	public static function getDDArray($module_name, $lang_data= null) {
+	public static function getDDArray($module_name, $lang_data= null, $filter = []) {
 		$module = Module::where('name', $module_name)->first();
 		if(isset($module)) {
 			$model_name = ucfirst(str_singular($module_name));
@@ -845,7 +845,20 @@ class Module extends Model
 			} else {
 				if ($lang_data != null) {
 					$lang = $lang_data['lang'];
-					$result = $model::where('lang', $lang)->get();
+					$result = $model::where('lang', $lang);
+                   
+					if (count($filter) > 0) {
+						foreach ($filter as $ex) {
+							if (count($ex) > 1) {
+								$filterCol = trim($ex[0]);
+								$filterValue = trim($ex[1]);
+								$result = $result->where($filterCol, $filterValue);
+							}
+						}
+					}
+
+					$result = $result->get();
+
 				} else {
 					$result = $model::all();
 				}
@@ -1049,6 +1062,18 @@ class Module extends Model
 							$request->{$field['colname']} = date("Y-m-d H:i:s", strtotime($d2['year']."-".$d2['month']."-".$d2['day']." ".substr($date, 11)));
 						}
 						$row->{$field['colname']} = $request->{$field['colname']};
+						break;
+					case 'Dropdown':
+			
+						$row->{$field['colname']} = $request->{$field['colname']};
+						//TODO : @elements is hardcode
+						if ($field["popup_vals"] != "" && $field["popup_vals"] == "@elements") {
+							$columnWithoutId = rtrim($field['colname'],"_id");
+							$elementValue = "";
+							$elementValue = ModuleFields::getFieldValueByPopupVals($field["popup_vals"], $request->{$field['colname']}, "value");
+							$row->{$columnWithoutId} = $elementValue;
+						}
+						
 						break;
 					case 'Multiselect':
 						#TODO: Bug fix
