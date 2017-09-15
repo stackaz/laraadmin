@@ -40,6 +40,8 @@ class LAFormMaker
 			$maxlength = $module->fields[$field_name]['maxlength'];
 			$required = $module->fields[$field_name]['required'];
 			$popup_vals = $module->fields[$field_name]['popup_vals'];
+			$filter_expressions = $module->fields[$field_name]['filter_expressions'];
+
 			
 			if($required2 != null) {
 				$required = $required2;
@@ -208,7 +210,7 @@ class LAFormMaker
 					
 					if($popup_vals != "") {
 						$tmp_popup_vals = $popup_vals;
-						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data);
+						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data, $filter_expressions );
 						// echo "<pre>";
 						// var_dump($module);
 						if(empty($default_val)){
@@ -412,7 +414,7 @@ class LAFormMaker
 					}
 					
 					if($popup_vals != "") {
-						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data);
+						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data, $filter_expressions);
 					} else {
 						$popup_vals = array();
 					}
@@ -453,7 +455,7 @@ class LAFormMaker
 					
 					if(starts_with($popup_vals, "@")) {
 						//LamLe -- add filter language_data
-						$popup_vals = LAFormMaker::process_values($popup_vals,$lang_data);
+						$popup_vals = LAFormMaker::process_values($popup_vals,$lang_data, $filter_expressions);
 						$out .= '<div class="radio">';
 						foreach ($popup_vals as $key => $value) {
 							$sel = false;
@@ -524,7 +526,7 @@ class LAFormMaker
 							$default_val = array();
 						}
 					}
-					$default_val = LAFormMaker::process_values($default_val, $lang_data);
+					$default_val = LAFormMaker::process_values($default_val, $lang_data, $filter_expressions);
 					$out .= Form::select($field_name."[]", $default_val, $default_val, $params);
 					break;
 				case 'Textarea':
@@ -578,12 +580,18 @@ class LAFormMaker
 		}
 	}
 	
+	public static function process_filter_expressions($filter_expressions = "") {
+
+		$expression[] = explode("=",$filter_expressions);
+
+		return  $expression;
+	}
 	/**
 	* Processes the populated values for Multiselect / Taginput / Dropdown
 	* get data from module / table whichever is found if starts with '@'
 	**/
 	// $values = LAFormMaker::process_values($data);
-	public static function process_values($json, $lang_data=null) {
+	public static function process_values($json, $lang_data=null, $filter_expressions = "") {
 		$out = array();
 		// Check if populated values are from Module or Database Table
 		if(is_string($json) && starts_with($json, "@")) {
@@ -591,11 +599,12 @@ class LAFormMaker
 			// Get Module / Table Name
 			$json = str_ireplace("@", "", $json);
 			$table_name = strtolower(str_plural($json));
-			
+			$filter = self::process_filter_expressions($filter_expressions);
+
 			// Search Module
 			$module = Module::getByTable($table_name);
 			if(isset($module->id)) {
-				$out = Module::getDDArray($module->name, $lang_data);
+				$out = Module::getDDArray($module->name, $lang_data, $filter);
 			} else {
 				// Search Table if no module found
 				if (Schema::hasTable($table_name)) {
@@ -604,10 +613,24 @@ class LAFormMaker
 					//LamLe - Filter language
 					if ($lang_data != null) {
 						$lang = $lang_data['lang'];
-						$result = $model::where('lang', $lang)->get();
+						$result = $model::where('lang', $lang);
+						
+						if (count($filter) > 0) {
+							foreach ($filter as $ex) {
+								if (count($ex) > 1) {
+									$filterCol = trim($ex[0]);
+									$filterValue = trim($ex[1]);
+									$result = $result->where($filterCol, $filterValue);
+								}
+							}
+						}
+						
+						$result = $result->get();
+						
 					} else {
 						$result = $model::all();
 					}
+					
 
 					//$result = $model::all();
 					// find view column name
