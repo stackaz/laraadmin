@@ -245,35 +245,56 @@ class ModuleFields extends Model
 		}
     }
 
-    public static function getFieldValueByPopupVals($popup_vals, $value, $value_field_name = "") {
+    public static function getFieldValueByPopupVals($popup_vals, $values, $value_field_name = "") {
         $external_table_name = substr($popup_vals, 1);
 
 		if(Schema::hasTable($external_table_name)) {
             
             $dataModel = "App\\Models\\".ucfirst(str_singular($external_table_name));
-            $contentValue = $dataModel::find(mongo_id($value));
+            $external_module = DB::table('modules')->where('name_db', $external_table_name)->first();
 
-            if(!empty($contentValue)){
-                $external_module = DB::table('modules')->where('name_db', $external_table_name)->first();
+            //Multi select
+            if (is_array($values)) {
+               $array_value = [];
+               foreach ($values as $value) {
+                $array_value[] = self::getValueById($dataModel, $external_module, $value, $value_field_name);
+               }
+               return json_encode($array_value);
 
-                if ($value_field_name != "") {
-                    return $contentValue->$value_field_name;
-                } else if(isset($external_module->view_col)) {
-                    $external_value_viewcol_name = $external_module->view_col;
-				    return $contentValue->$external_value_viewcol_name;
-                } else {
-                    if(isset($external_value[0]->{"name"})) {
-                        return $contentValue->name;
-                    } else if(isset($external_value[0]->{"value"})) {
-                        return $contentValue->title;
-                    }
-                }
-			} else {
-				return $value;
-			}
+            } else {
+                return self::getValueById($dataModel, $external_module, $values, $value_field_name);
+            }
+            
 		} else {
 			return $value;
 		}
+    }
+
+    
+    /*
+    * get value by ID (ex: on Elements, get value_field_name by id)
+    */
+    public static function getValueById($data_model, $external_module, $id, $value_field_name) {
+
+        $contentValue = $data_model::find(mongo_id($id));
+
+        if(!empty($contentValue)){
+            if ($value_field_name != "") {
+                return $contentValue->$value_field_name;
+            } else if(isset($external_module->view_col)) {
+                $external_value_viewcol_name = $external_module->view_col;
+                return $contentValue->$external_value_viewcol_name;
+            } else {
+                if(isset($external_value[0]->{"name"})) {
+                    return $contentValue->name;
+                } else if(isset($external_value[0]->{"value"})) {
+                    return $contentValue->title;
+                }
+            }
+        } else {
+            return $value;
+        }
+        return "";
     }
 	
 	public static function listingColumnAccessScan($module_name, $listing_cols) {

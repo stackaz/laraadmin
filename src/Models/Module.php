@@ -1046,6 +1046,15 @@ class Module extends Model
 							$row->{$field['colname']} = false;
 						}
 						break;
+					case 'Radio':
+						$row->{$field['colname']} = $request->{$field['colname']};
+						if ($field["popup_vals"] != "" && $field["popup_vals"] == "@elements") {
+							$columnWithoutId = rtrim($field['colname'],"_id");
+							$elementValue = "";
+							$elementValue = ModuleFields::getFieldValueByPopupVals($field["popup_vals"], $request->{$field['colname']}, "value");
+							$row->{$columnWithoutId} = $elementValue;
+						}
+					break;
 					case 'Date':
 						if($request->{$field['colname']} != "") {
 							$date = $request->{$field['colname']};
@@ -1078,13 +1087,26 @@ class Module extends Model
 					case 'Multiselect':
 						#TODO: Bug fix
 						$row->{$field['colname']} = json_encode($request->{$field['colname']});
+						if ($field["popup_vals"] != "" && $field["popup_vals"] == "@elements") {
+							$columnWithoutId = rtrim($field['colname'],"_id");
+							$elementValue = "";
+							$elementValue = ModuleFields::getFieldValueByPopupVals($field["popup_vals"], $request->{$field['colname']}, "value");
+							$row->{$columnWithoutId} = $elementValue;
+						}
 						break;
 					case 'Password':
 						$row->{$field['colname']} = bcrypt($request->{$field['colname']});
 						break;
 					case 'Taginput':
 						#TODO: Bug fix
+						
 						$row->{$field['colname']} = json_encode($request->{$field['colname']});
+						if ($field["popup_vals"] != "" && $field["popup_vals"] == "@elements") {
+							$columnWithoutId = rtrim($field['colname'],"_id");
+							$elementValue = "";
+							$elementValue = ModuleFields::getFieldValueByPopupVals($field["popup_vals"], $request->{$field['colname']}, "value");
+							$row->{$columnWithoutId} = $elementValue;
+						}
 						break;
 					case 'Files':
 						$files = json_decode($request->{$field['colname']});

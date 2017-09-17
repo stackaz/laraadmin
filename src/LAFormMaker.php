@@ -696,9 +696,13 @@ class LAFormMaker
 		// Check Field View Aceess
 		if(Module::hasFieldAccess($module->id, $module->fields[$field_name]['id'], $access_type = "view")) {
 			
+			$lang = LanguageTransportor::getFromAndLang();
+
 			$fieldObj = $module->fields[$field_name];
 			$label = $module->fields[$field_name]['label'];
 			$field_type = $module->fields[$field_name]['field_type'];
+			$filter_expressions = $module->fields[$field_name]['filter_expressions'];
+
 			$field_type = ModuleFieldTypes::find($field_type);
 			
 			$row = null;
@@ -739,7 +743,7 @@ class LAFormMaker
 					
 					break;
 				case 'Dropdown':
-					$values = LAFormMaker::process_values($fieldObj['popup_vals']);
+					$values = LAFormMaker::process_values($fieldObj['popup_vals'], $lang, $filter_expressions);
 					if(starts_with($fieldObj['popup_vals'], "@")) {
 						if($value != 0) {
 							$moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
@@ -817,13 +821,14 @@ class LAFormMaker
 					break;
 				case 'Multiselect':
 					$valueOut = "";
-					$values = LAFormMaker::process_values($fieldObj['popup_vals']);
+					$values = LAFormMaker::process_values($fieldObj['popup_vals'], $lang, $filter_expressions);
 					if(count($values)) {
 						if(starts_with($fieldObj['popup_vals'], "@")) {
 							$moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
 							$valueSel = json_decode($value);
+
 							foreach ($values as $key => $val) {
-								if(in_array($key, $valueSel)) {
+								if($valueSel != null && in_array($key, $valueSel)) {
 									$valueOut .= "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$key)."' class='label label-primary'>".$val."</a> ";
 								}
 							}
@@ -852,7 +857,7 @@ class LAFormMaker
 					break;
 				case 'Taginput':
 					$valueOut = "";
-					$values = LAFormMaker::process_values($fieldObj['popup_vals']);
+					$values = LAFormMaker::process_values($fieldObj['popup_vals'], $lang, $filter_expressions);
 					if(count($values)) {
 						if(starts_with($fieldObj['popup_vals'], "@")) {
 							$moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
