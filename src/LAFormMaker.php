@@ -213,7 +213,7 @@ class LAFormMaker
 						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data, $filter_expressions );
 						// echo "<pre>";
 						// var_dump($module);
-						if(empty($default_val)){
+						if(!empty($default_val)){
 							if(!empty($lang['curr_from'])){
 								$currFrom = $lang['curr_from'];
 								$default_val = LAFormMaker::mapDataDropdown($tmp_popup_vals, $lang_data['lang'], 
@@ -414,10 +414,22 @@ class LAFormMaker
 					}
 					
 					if($popup_vals != "") {
+						$tmp_popup_vals = $popup_vals;
+
 						$popup_vals = LAFormMaker::process_values($popup_vals, $lang_data, $filter_expressions);
+				
+						if(!empty($default_val)){
+							if(!empty($lang['curr_from'])){
+								$currFrom = $lang['curr_from'];
+								$default_val = LAFormMaker::mapDataMultiSelect($tmp_popup_vals, $lang_data['lang'], 
+																			$module->model,$currFrom, $field_name);
+								
+							}
+						}
 					} else {
 						$popup_vals = array();
 					}
+
 					$out .= Form::select($field_name."[]", $popup_vals, $default_val, $params);
 					break;
 				case 'Name':
@@ -708,6 +720,7 @@ class LAFormMaker
 			$row = null;
 			if(isset($module->row)) {
 				$row = $module->row;
+				$lang["lang"] = $row->lang != "" ? $row->lang : $lang["lang"];
 			}
 			
 			$out = '<div class="form-group">';
@@ -747,10 +760,18 @@ class LAFormMaker
 					if(starts_with($fieldObj['popup_vals'], "@")) {
 						if($value != 0) {
 							$moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
-							if(isset($moduleVal->id)) {
-								$value = "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$value)."' class='label label-primary'>".$values[$value]."</a> ";
+
+							$value_label = "";
+							if (is_array($values) && array_key_exists($value, $values)) {
+								$value_label = $values[$value];
 							} else {
-								$value = "<a class='label label-primary'>".$values[$value]."</a> ";
+								$value_label = $value;
+							}
+
+							if(isset($moduleVal->id)) {
+								$value = "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$value)."' class='label label-primary'>".$value_label."</a> ";
+							} else {
+								$value = "<a class='label label-primary'>".$value_label."</a> ";
 							}
 						} else {
 							$value = "None";
@@ -767,7 +788,7 @@ class LAFormMaker
 							$value = '<a class="preview" target="_blank" href="'.url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name).'">
 							<span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-file-o fa-stack-1x fa-inverse"></i></span> '.$upload->name.'</a>';
 						} else {
-							$value = 'Uplaoded file not found.';
+							$value = 'Upload file not found.';
 						}
 					} else {
 						$value = 'No file.';
@@ -977,4 +998,73 @@ class LAFormMaker
 			return false;
 		}
 	}
+
+	/**
+	* Map Data Lang to other data lang.
+	* get data from module / table whichever is found if starts with '@'
+	* @param $value of fromLang.
+	
+	**/
+	// $values = LAFormMaker::mapDataMultiSelect($data);
+	public static function mapDataMultiSelect($json, $toLang, $parentModel, $parentValue, $fieldName) {
+		
+		$parentModel = "App\\Models\\".$parentModel;
+
+		$parentData = $parentModel::where("_id", mongo_id($parentValue))->first();
+		if(empty($parentData)) {
+			return [];
+		}
+		
+
+		$fieldData = $parentData->$fieldName;
+
+		// Check if populated values are from Module or Database Table
+		if(is_string($json) && starts_with($json, "@")) {
+			// Get Module / Table Name
+			$json = str_ireplace("@", "", $json);
+			$table_name = strtolower(str_plural($json));
+			
+			// Search Module
+			$module = Module::getByTable($table_name);
+			$model = "App\\Models\\".ucfirst(str_singular($table_name));
+
+			$field_values = json_decode($fieldData);
+			$map_values = [];
+
+			if (!is_array($field_values)) {
+				return [];
+			}
+
+			foreach($field_values as $key => $fieldValue) {
+				$dataMeta = LanguageTransportor::getInfoLanguageMeta(['content_id'=>$fieldValue,
+													'reference' => $module->name]);
+								
+				if(empty($dataMeta)){
+					return [];
+				}
+
+				$origin = $dataMeta->origin;
+				$dataMetaes = LanguageTransportor::getInfoLanguageMetaFromOrigin(['origin' => $origin,
+																					'reference' => $module->name]);
+
+				if(empty($dataMetaes)) {
+					return [];
+				}
+
+				foreach($dataMetaes as $key => $value) {
+					if($value->lang == $toLang) {
+						$map_values[] = mongo_id_string($value->content_id);
+					}
+				}
+			}
+
+			if (count($map_values) > 0) {
+				return  $map_values;
+			}
+
+			//dd($map_values);
+			return [];
+		}
+	}
+
 }

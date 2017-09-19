@@ -1426,11 +1426,15 @@ class Module extends Model
 			$row = $model::find($id);
 			if(isset($row)) {
 				$newRow = new $model();
-				$ftypes = ModuleFieldTypes::getFTypes2();
+				//$ftypes = ModuleFieldTypes::getFTypes2();
 				foreach ($module->fields as $field) {
 					$isCopy = $field['is_copy'];
-		
-					if ($isCopy) {
+					$field_type = $field['field_type'];
+
+					if ($isCopy 
+						|| $field_type  == 7  //dropdown
+						|| $field_type  == 15 //Multiselect - //Taginput
+						|| $field_type  == 20) {
 						$newRow->{$field['colname']} = $row->{$field['colname']} ;
 					}
 				}
