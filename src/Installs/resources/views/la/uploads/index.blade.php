@@ -153,7 +153,7 @@ $(function () {
         @endif
 
         $("#EditFileModal .fileObject").empty();
-        if($.inArray(upload.extension, ["jpg", "jpeg", "png", "gif", "bmp"]) > -1) {
+        if($.inArray(upload.extension, ["jpg", "jpeg", "png", "gif", "bmp","PNG","JPG","JPEG","BMP","GIF"]) > -1) {
             $("#EditFileModal .fileObject").append('<img src="'+bsurl+'/files/'+upload.hash+'/'+upload.name+'">');
             $("#EditFileModal .fileObject").css("padding", "15px 0px");
         } else {
@@ -258,7 +258,7 @@ function loadUploadedFiles() {
 }
 function formatFile(upload) {
     var image = '';
-    if($.inArray(upload.extension, ["jpg", "jpeg", "png", "gif", "bmp"]) > -1) {
+    if($.inArray(upload.extension, ["jpg", "jpeg", "png", "gif", "bmp","PNG","JPG","JPEG","BMP","GIF"]) > -1) {
         image = '<img src="'+bsurl+'/files/'+upload.hash+'/'+upload.name+'?s=130">';
     } else {
         switch (upload.extension) {
