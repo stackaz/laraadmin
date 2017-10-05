@@ -18,7 +18,7 @@
 			
 			@la_access("__module_name__", "delete")
 				{{ Form::open(['route' => [config('laraadmin.adminRoute') . '.__db_table_name__.destroy', $__singular_var__->id], 'method' => 'delete', 'style'=>'display:inline']) }}
-					<button class="btn btn-default btn-delete btn-xs" type="submit"><i class="fa fa-times"></i></button>
+					<a class="btn btn-default btn-delete btn-xs row_delete" data-name="{{$__singular_var__->$view_col}}" href="#" name="delete_modal"><i class="fa fa-times"></i></a>
 				{{ Form::close() }}
 			@endla_access
 		</div>
@@ -47,3 +47,25 @@
 	</div>
 </div>
 @endsection
+
+
+@push('scripts')
+<script>
+$(function () {
+	@la_access("__module_name__", "delete")
+		$('.row_delete').on('click', function (e) {
+			var form = $(this).closest( "form" );
+			
+			$("#item_delete_id").html($(this).attr("data-name"));
+			$('#ConfirmModal').modal({ backdrop: 'static', keyboard: false })
+				.on('click', '#delete-btn', function(){
+					form.submit();
+			});
+
+			e.preventDefault();
+		});
+	@endla_access
+
+});
+</script>
+@endpush

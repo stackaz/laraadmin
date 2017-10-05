@@ -31,6 +31,8 @@
 
 	@include('la.layouts.partials.controlsidebar')
 
+	@include('la.layouts.partials.delete_confirm_dialog')
+
 	@include('la.layouts.partials.footer')
 
 </div><!-- ./wrapper -->

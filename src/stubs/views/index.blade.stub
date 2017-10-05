@@ -68,6 +68,22 @@ $(function () {
 		columnDefs: [ { orderable: false, targets: [-1] }],
 		@endif
 	});
+
+
+	@la_access("__module_name_2__", "delete")
+		$('#example1 tbody').on('click', 'tr td .row_delete', function (e) {
+			var form = $(this).closest( "form" );
+			
+			$("#item_delete_id").html($(this).attr("data-name"));
+			$('#ConfirmModal').modal({ backdrop: 'static', keyboard: false })
+				.on('click', '#delete-btn', function(){
+					form.submit();
+			});
+
+			e.preventDefault();
+		});
+	@endla_access
+
 	$("#__singular_var__-add-form").validate({
 		
 	});

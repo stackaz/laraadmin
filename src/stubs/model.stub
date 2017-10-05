@@ -6,13 +6,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class __model_class_name__ extends Model
+class __model_class_name__ extends Eloquent
 {
     use SoftDeletes;
 	
+	protected $connection = 'mongodb';
+
 	protected $table = '__db_table_name__';
 	
 	protected $hidden = [
@@ -22,4 +24,15 @@ class __model_class_name__ extends Model
 	protected $guarded = [];
 
 	protected $dates = ['deleted_at'];
+
+	public function scopeSearch($query, $param)
+    {
+    
+        $query->whereNull('deleted_at');
+
+        if ($param->get("languages_filter") != "all"){
+			$query->where("lang", $param->get("languages_filter"));
+		}
+        return $query;
+    }
 }
