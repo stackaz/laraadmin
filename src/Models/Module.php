@@ -841,7 +841,8 @@ class Module extends Model
 
 			$result = null;
 			if(in_array($module_name, ['Users', 'Departments', 'Employees', 'Roles', 'Permissions', 'Organizations'])) {
-				$result = $model::all();
+				//$result = $model::all();
+				$result = $model::whereNull('deleted_at')->get();
 			} else {
 				if ($lang_data != null) {
 					$lang = $lang_data['lang'];

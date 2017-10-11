@@ -290,7 +290,7 @@ class LAFormMaker
 							if(isset($upload->id)) {
 								$uploadIds[] = $upload->id;
 								$fileImage = "";
-								if(in_array($upload->extension, ["jpg", "png", "gif", "jpeg"])) {
+								if(in_array(strtolower($upload->extension), ["jpg", "png", "gif", "jpeg"])) {
 									$fileImage = "<img src='".url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name."?s=90")."'>";
 								} else {
 									$fileImage = "<i class='fa fa-file-o'></i>";
@@ -804,7 +804,7 @@ class LAFormMaker
 							if(isset($upload->id)) {
 								$uploadIds[] = $upload->id;
 								$fileImage = "";
-								if(in_array($upload->extension, ["jpg", "png", "gif", "jpeg"])) {
+								if(in_array(strtolower($upload->extension), ["jpg", "png", "gif", "jpeg"])) {
 									$fileImage = "<img src='".url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name."?s=90")."'>";
 								} else {
 									$fileImage = "<i class='fa fa-file-o'></i>";
