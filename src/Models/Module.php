@@ -1218,6 +1218,9 @@ class Module extends Model
 		
 		if(is_string($module_id)) {
 			$module = Module::get($module_id);
+			if(empty($module)) {
+				return false;
+			}
 			$module_id = $module->id;
 		}
 		
